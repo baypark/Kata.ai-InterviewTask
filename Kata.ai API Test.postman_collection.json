@@ -1,0 +1,735 @@
+{
+	"info": {
+		"_postman_id": "81433796-4392-4330-a5b9-b8e6beb14911",
+		"name": "Kata.ai API Test",
+		"description": "API Test Assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Create New User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP responses\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"//verification data\r",
+											"var jsonData = pm.response.json(); \r",
+											"pm.test(\"Verify name\", function () { \r",
+											"    pm.expect(jsonData.name).is.to.equal(\"baytest\"); \r",
+											"    pm.test(\"Verify job\", function () { \r",
+											"    pm.expect(jsonData.job).is.to.equal(\"qa engineer\"); \r",
+											"});\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"baytest\",\r\n    \"job\": \"qa engineer\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								},
+								"description": "Expected result user has been created"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Create New User - null name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP Responses\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"//verification data\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"\",\r\n    \"job\": \"sqa\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								},
+								"description": "expected result user not created"
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User - Not string param body",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP Responses\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": baytest3,\r\n    \"job\":  sqa\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								},
+								"description": "Expected result Parameter of name & job must be string"
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User - Wrong method",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 405\", function () {\r",
+											"    pm.response.to.have.status(405);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"baytest4\",\r\n    \"job\":  \"sqa\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								},
+								"description": "Expected result the method must be POST"
+							},
+							"response": []
+						},
+						{
+							"name": "Create New User - Invalid Value",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"SELECT * FROM Users WHERE UserId = 666 OR 1=1;\",\r\n    \"job\": \"or\" \"=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								},
+								"description": "Expected Result invalid value & bad request"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Get All User Page",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Get all user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP responses\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users?page=2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										}
+									]
+								},
+								"description": "Expected Result Get All User data on page 2"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Get All User  - Wrong method",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 405\", function () {\r",
+											"    pm.response.to.have.status(405);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users?page=2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										}
+									]
+								},
+								"description": "Expected result the method must be GET"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Update User",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Update User - Job",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP responses\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//verification data\r",
+											"var jsonData = pm.response.json(); \r",
+											"    pm.test(\"Verify job\", function () { \r",
+											"    pm.expect(jsonData.job).is.to.equal(\"tester\"); \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"baytest2\",\r\n    \"job\": \"tester\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"2"
+									]
+								},
+								"description": "Expected result user job updated"
+							},
+							"response": []
+						},
+						{
+							"name": "Update User - Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP responses\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//verification data\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.name).to.eql(\"baytester2\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"baytester2\",\r\n    \"job\": \"tester\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"2"
+									]
+								},
+								"description": "Expected Result user name success updated"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Update User - Null Job",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP responses\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//verification data\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.job).to.eql(\"\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"baytester2\",\r\n    \"job\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"2"
+									]
+								},
+								"description": "Expected Result validation job not insert null data"
+							},
+							"response": []
+						},
+						{
+							"name": "Update User - Not string param body",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP responses\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": baytester2,\r\n    \"job\":  Tester\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"2"
+									]
+								},
+								"description": "Expected result Parameter of name & job must be string"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Get Detail User",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Get Single User Detail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//assert HTTP responses\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"//verification data\r",
+											"pm.test(\"verify last_name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.last_name).to.eql(\"Holt\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Get Single User Detail - Invalid id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/4-5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"4-5"
+									]
+								},
+								"description": "Expected Result user data not found"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Single User Detail - Wrong method",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 405\", function () {\r",
+											"    pm.response.to.have.status(405);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/4",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"4"
+									]
+								},
+								"description": "Expected result the method must be GET"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Delete User",
+			"item": [
+				{
+					"name": "Positive Scenario",
+					"item": [
+						{
+							"name": "Delete User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://reqres.in/api/users/2",
+									"protocol": "https",
+									"host": [
+										"reqres",
+										"in"
+									],
+									"path": [
+										"api",
+										"users",
+										"2"
+									]
+								},
+								"description": "Expected Result Data User Success Delete"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative Scenario",
+					"item": [
+						{
+							"name": "Delete User - Invalid id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/2-5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"2-5"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
